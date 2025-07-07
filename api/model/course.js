@@ -5,9 +5,9 @@ const courseSchema=new mongoose.Schema({
     price:{type:Number,required:true},
     description:{type:String,required:true},
     startDate:{type:String,required:true},
-    endDate:{type:String,requied:true},
-    imageId:{type:String,requird:true},
+    endDate:{type:String,required:true},
+    imageId:{type:String,required:true},
     imageUrl:{type:String,required:true},
-    uId:{type:String,requied:true}
+    uId:{type:String,required:true}
 })
 module.exports=mongoose.model("course",courseSchema);

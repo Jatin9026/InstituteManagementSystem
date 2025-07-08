@@ -131,7 +131,7 @@ router.delete("/:id", checkAuth, async (req, res) => {
 //PUT Request to update course we do not use patch req because agar frontend se data aayega to pura aayega or agar patch use karrenge to sare fields ko update karne padenge agar 1 bhi field miss hota hai to uski value null slet ho jayegin is liye put use karenge
 router.put("/:id", checkAuth, async (req, res) => {
     try {
-      const courseId = req.params.id;
+      const courseId = res.params.id;
       const token = req.headers.authorization?.split(" ")[1];
       const verifiedToken = jwt.verify(token, process.env.JWT_SECRET); // Or use `req.user` from middleware
   

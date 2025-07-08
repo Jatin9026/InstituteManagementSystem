@@ -6,6 +6,7 @@ const cloudinary = require("cloudinary").v2;
 const checkAuth = require("../middleware/checkAuth");
 const jwt = require("jsonwebtoken");
 const { resource } = require("../app");
+const student = require("../model/student");
 //signup---->post--->data client se bhejna
 router.post("/add-student", checkAuth, (req, res) => {
     const token = req.headers.authorization.split(" ")[1];
@@ -181,6 +182,21 @@ router.put("/:id", checkAuth, async (req, res) => {
       });
     }
   });
-  
+  //get latest 5 student data 
+  router.get("/latest-student",checkAuth,(req,res)=>{
+    const token=req.headers.authorization.split(" ")[1];
+    const verifiedToken=jwt.verify(token,process.env.JWT_SECRET);
+    Student.find({uId:verifiedToken.uId}).sort({$natural:-1}).limit(5)//peeche se data nikal rha hoga 5 student ka
+    .then(result=>{
+        res.status(200).json({
+            students:result
+        })
+    }).catch(err=>{
+    res.status(500).json({
+        msg:"error",
+        error:err
+    })
+  })
+  })
 
   module.exports=router

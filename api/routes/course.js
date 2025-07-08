@@ -6,6 +6,8 @@ const cloudinary = require("cloudinary").v2;
 const checkAuth = require("../middleware/checkAuth");
 const jwt = require("jsonwebtoken");
 const { resource } = require("../app");
+const course = require("../model/course");
+const Student = require("../model/student");
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -71,21 +73,21 @@ router.get("/all-courses", checkAuth, async (req, res) => {
 });
 //get one course for any user
 router.get("/course-detail/:id", checkAuth, async (req, res) => {
-  try {
-    const user = await Course.findById(req.params.id);
-    console.log(req.params.id);
-    console.log(req.params);
-    console.log(req);
-    res.status(200).json({
-      user: user,
-    });
-  } catch (err) {
+ Course.findById(req.params.id).then(result=>{
+        Student.find({courseId:req.params.id}).then(students=>{
+            res.status(200).json({
+                course:result,
+                studentList:students
+            })
+        })
+    })
+.catch (err=>{
     console.log(err);
     res.status(500).json({
       err: "internal server error",
     });
-  }
-});
+  })
+})
 //delete course
 // ✅ Delete Course (With Ownership Check)
 router.delete("/:id", checkAuth, async (req, res) => {
@@ -183,5 +185,20 @@ router.put("/:id", checkAuth, async (req, res) => {
       return res.status(500).json({ msg: "Internal server error", error: err.message });
     }
   });
-  
+  //get latest 5 courses data 
+    router.get("/latest-course",checkAuth,(req,res)=>{
+      const token=req.headers.authorization.split(" ")[1];
+      const verifiedToken=jwt.verify(token,process.env.JWT_SECRET);
+      Course.find({uId:verifiedToken.uId}).sort({$natural:-1}).limit(5)//peeche se data nikal rha hoga 5 student ka
+      .then(result=>{
+          res.status(200).json({
+              course:result
+          })
+      }).catch(err=>{
+      res.status(500).json({
+          msg:"error",
+          error:err
+      })
+    })
+    })
 module.exports = router;

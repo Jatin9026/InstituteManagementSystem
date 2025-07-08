@@ -114,4 +114,73 @@ router.delete("/:id", checkAuth, async (req, res) => {
   }
 });
 
+//update student
+// Update student
+router.put("/:id", checkAuth, async (req, res) => {
+    try {
+      const studentId = req.params.id; // FIXED: req.params not res.params
+  
+      // Get token
+      const token = req.headers.authorization?.split(" ")[1];
+      const verifiedToken = jwt.verify(token, process.env.JWT_SECRET);
+  
+      // Fetch student by ID
+      const student = await Student.findById(studentId);
+      if (!student) {
+        return res.status(404).json({ msg: "Student not found" }); // FIXED: correct error message
+      }
+  
+      // Authorization check
+      if (student.uId.toString() !== verifiedToken.uId) {
+        return res.status(403).json({ msg: "Unauthorized to update this student" });
+      }
+  
+      // Handle image upload if exists
+      let imageUrl = student.imageUrl;
+      let imageId = student.imageId;
+  
+      if (req.files && req.files.image) {
+        // Delete old image from cloudinary
+        await cloudinary.uploader.destroy(student.imageId);
+  
+        // Upload new image
+        const uploadedImage = await cloudinary.uploader.upload(req.files.image.tempFilePath);
+  
+        imageUrl = uploadedImage.secure_url;
+        imageId = uploadedImage.public_id;
+      }
+  
+      // Updated student data
+      const updatedStudentData = {
+        fullName: req.body.fullName,
+        phone: req.body.phone,
+        email: req.body.email,
+        address: req.body.address,
+        courseId: req.body.courseId,
+        imageId: imageId,
+        imageUrl: imageUrl,
+        uId: verifiedToken.uId
+      };
+  
+      const updatedStudent = await Student.findByIdAndUpdate(
+        studentId,
+        updatedStudentData,
+        { new: true }
+      );
+  
+      return res.status(200).json({
+        msg: "Student updated successfully",
+        data: updatedStudent,
+      });
+  
+    } catch (err) {
+      console.error("Student update error:", err);
+      return res.status(500).json({
+        msg: "Internal server error",
+        error: err.message,
+      });
+    }
+  });
+  
+
   module.exports=router

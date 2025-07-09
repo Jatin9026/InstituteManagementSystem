@@ -7,6 +7,7 @@ const userrouter=require("./routes/user")
 const studentrouter=require("./routes/student")
 const courserouter=require("./routes/course")
 const feerouter=require("./routes/fee");
+const cors=require("cors")
 const fileUpload = require('express-fileupload');
 mongoose.connect("mongodb+srv://jatingupta918306:jatin%401415@cluster0.8aipfnp.mongodb.net/InstitueManagementSystem").then(()=>{
     console.log("mongodb connected")
@@ -14,6 +15,7 @@ mongoose.connect("mongodb+srv://jatingupta918306:jatin%401415@cluster0.8aipfnp.m
 console.log(err);
 })
 app.use(bodyParser.json());
+app.use(cors())
 app.use(fileUpload({
     useTempFiles:true,
     // tempFileDir:'/tmp/'

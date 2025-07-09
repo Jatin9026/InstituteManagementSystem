@@ -16,7 +16,7 @@ cloudinary.config({
 // 🔐 POST /signup — Register User
 router.post("/signup", async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { fullName,phone , email, password } = req.body;
 
     // Email existence check
     const existingUser = await User.findOne({ email });
@@ -36,8 +36,8 @@ router.post("/signup", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      fullName,
+      phone,
       email,
       password: hashedPassword,
       imageUrl: cloudRes.secure_url,
@@ -51,8 +51,8 @@ router.post("/signup", async (req, res) => {
       user: {
         _id: savedUser._id,
         email: savedUser.email,
-        firstName: savedUser.firstName,
-        lastName: savedUser.lastName,
+        fullName:savedUser.fullName,
+        phone:savedUser.phone,
         imageUrl: savedUser.imageUrl,
       },
     });
@@ -88,8 +88,8 @@ router.post("/login", async (req, res) => {
         {
           uId: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+          fullName:user.fullName,
+          phone:user.phone
         },
         process.env.JWT_SECRET,
         { expiresIn: "365d" }
@@ -101,8 +101,8 @@ router.post("/login", async (req, res) => {
         user: {
           _id: user._id,
           email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
+         fullName:user.fullName,
+         phone:user.phone,
           imageUrl: user.imageUrl,
         },
       });

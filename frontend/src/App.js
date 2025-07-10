@@ -2,6 +2,8 @@ import React from 'react'
 import Signup from '../src/components/Signup'
 import Login from '../src/components/Login'
 import Dashboard from '../src/components/Dashboard'
+import {ToastContainer} from "react-toastify"
+import "react-toastify/dist/ReactToastify.css";
 import {createBrowserRouter, RouterProvider } from 'react-router-dom'
 const App = () => {
   const myRouter=createBrowserRouter([
@@ -13,6 +15,7 @@ const App = () => {
   return (
     <>
 <RouterProvider router={myRouter}/>
+<ToastContainer/>
     </>
   )
 }

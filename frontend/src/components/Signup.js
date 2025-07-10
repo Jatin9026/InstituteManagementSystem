@@ -31,7 +31,7 @@ axios.post("http://localhost:4200/user/signup",formData).then(res=>{
     <div className="signup-wrapper"> 
       <div className="signup-box">
         <div className="signup-left">
-          <img alt="instute image" src={require("../assets/signupLogo.png")}/>
+          <img alt="instute image" className="signup-left-image" src={require("../assets/signupLogo.png")}/>
         </div>
         <div className="signup-right">
           <h1>
